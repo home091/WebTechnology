@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- axios cdn link -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <!-- lord icon cdn link -->
+    <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+</head>
+
+<style>
+    html, body, div, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Apply a background image and style the body */
+body {
+    background-image: url("https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Center content vertically and horizontally */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Style the user details box */
+.user-details {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Style the title */
+.title {
+    font-family: 'Barriecito', cursive;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4ab3fc;
+    margin-bottom: 20px;
+}
+
+/* Style the avatar */
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    transition: transform 0.3s ease-in-out;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+}
+
+/* Style the search form */
+.search-form {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 50px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.search-bar {
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+.search-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Style links */
+a {
+    color: #4ab3fc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+
+<body>
+
+    <div class="github-logo">
+        <i class="fa-brands fa-github corner-stamp" style="font-size: 64px;"></i>
+    </div>
+
+    <div class="section">
+        <div class="search-form" id="search_form">
+            <h2 class="title">
+                Search For Github User
+                <!-- <i class="fa-brands fa-github fa-beat" style="color: #a554ed;"></i> -->
+            </h2>
+            <form onsubmit="searchUser(); return false">
+                <input type="text" class="search-bar" id="search_bar">
+                <!-- <input type="submit" value="Search" class=``> -->
+                <button>
+                    <lord-icon src="https://cdn.lordicon.com/osbjlbsb.json" trigger="hover"
+                        colors="outline:#121331,secondary:#b26836,secondary2:#4bb3fd,quaternary:#ebe6ef"
+                        style="width:75px;height:75px">
+                    </lord-icon>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="section user-details" id="user_detail">
+        <h2 class="title">User Details on <i class="fa-brands fa-github color-purple"></i></h2>
+        <div class="user-avatar">
+            <img id="user_avatar_url" class="avatar"></img>
+        </div>
+        <div class="user-login">
+            <div class="detail_title"> User ID:</div>
+            <span id="user_login"></span>
+        </div>
+        <div class="user-name">
+            <div class="detail_title"> User Name:</div>
+            <span id="user_name"></span>
+        </div>
+        <div class="user-github-profile">
+            <div class="detail_title"> Github URL:</div>
+            <a id="user_github_html_url" target="_blank"></a>
+        </div>
+        <div class="user-public-repos">
+            <div class="detail_title"> Public Repos:</div>
+            <span id="user_public_repos"></span>
+        </div>
+    </div>
+
+
+
+    <div id="error_message" class="error-message scale-up-ver-bottom scale-up-hor-left">
+    </div>
+
+    <script>
+        const search_form = document.getElementById('search_form'); // linking search_form from the html file to js file
+        const users_list = document.getElementById('users_list'); // linking user_list from the html file to js file 
+        const user_detail = document.getElementById('user_detail'); // linking user_detail from the html file to js file
+        const user_login = document.getElementById('user_login');
+        const user_name = document.getElementById('user_name');
+        const user_avatar = document.getElementById('user_avatar_url');
+        const user_github = document.getElementById('user_github_html_url');
+        const search_bar = document.getElementById('search_bar');
+        const search_button = document.getElementById('search_button');
+        const error_message = document.getElementById('error_message');
+        const user_public_repos = document.getElementById('user_public_repos');
+
+        window.addEventListener('load', () => {
+            search_bar.value = '';
+        });
+
+        // user_detail.style.display = 'none';
+        error_message.style.display = 'none';
+
+
+        // base url for github api
+        const base_url = 'https://api.github.com/users';
+
+        // search the user based in the input in search bar
+        function searchUser() {
+            const search_value = search_bar.value;
+            if (search_value.trim() !== '') {
+                axios.get(`${base_url}/${search_value}`)
+                    .then((response) => {
+                        const user = response.data;
+                        user_login.innerHTML = user.login;
+                        user_name.innerHTML = user.name == null ? 'Not Available' : user.name;
+                        user_avatar.src = user.avatar_url;
+                        user_github.href = user.html_url;
+                        user_github.innerHTML = user.html_url;
+                        user_public_repos.innerHTML = user.public_repos;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        pop_error()
+                        error_message.innerHTML = "User not found or invalid username. Please try again!!!";
+                    });
+            }
+            else {
+                pop_error()
+                error_message.innerHTML = "Please enter username";
+            }
+        }
+
+        // popup of error message and it closes after 3 seconds with a timeout counter
+        function pop_error() {
+            error_message.style.display = 'flex';
+            setTimeout(function () {
+                error_message.style.display = 'none';
+            }, 3000);
+        }
+
+
+
+    </script>
+</body>
+
+</html>
